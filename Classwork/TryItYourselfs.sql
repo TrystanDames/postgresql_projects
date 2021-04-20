@@ -224,3 +224,19 @@ WITH (FORMAT CSV, HEADER);
 
 #3
 It will not due to the fact its only allowed up to 3 numbers before the decimal and 8 afterwards where we have 5 numbers before the decimal and 3 afterwards
+
+Page 106
+#1
+Area_Circle = PIE * R^2
+Area_Circle = 3.14 * 5^2
+Area_Circle = |/(3.14 * 5^2)
+SELECT
+|/(3.14*(5^2));
+You do not need parentheses as exponents are used.
+
+#2
+SELECT geo_name,
+state_us_abbreviation AS "st",
+(CAST (p0030005 AS numeric(8,1)) / p0010001) * 100 AS "pct_Indian and Natives"
+FROM us_counties_2010
+ORDER BY "pct_Indian and Natives" DESC;
