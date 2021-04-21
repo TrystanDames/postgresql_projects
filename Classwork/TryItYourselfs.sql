@@ -351,6 +351,8 @@ CREATE TABLE albums (
     CONSTRAINT release_date_check CHECK (album_release_date > '1/1/1925')
 );
 
+SELECT * FROM albums
+
 CREATE TABLE songs (
 song_id bigserial,
 song_title text NOT NULL,
