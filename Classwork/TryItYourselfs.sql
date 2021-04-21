@@ -1,4 +1,6 @@
 Page 45
+Chap1
+
 CREATE TABLE animals (
 id bigserial,
 animal_kind varchar(50)
@@ -33,6 +35,7 @@ VALUES ('Lion', 'Simba', '1994-05-07', 27),
 SELECT * FROM animal_specifics
 
 Page 57
+Chap1
 
 CREATE TABLE teachers (
  id bigserial,
@@ -67,6 +70,8 @@ WHERE hire_date >= '2010-01-01'
 ORDER BY salary DESC;
 
 Page 60
+Chap2
+
 CREATE TABLE char_data_types (
 varchar_column varchar(10),
 char_column char(10),
@@ -81,7 +86,7 @@ COPY char_data_types TO 'C:\Users\User\Desktop\SQL\My Queries\Classwork\typetest
 WITH (FORMAT CSV, HEADER, DELIMITER '|');
 
 Page 72
-
+Chap3
 numeric(4,1)
 This is so you can store numbers as big as 999,9 with one digit after the decimal point
 
@@ -91,6 +96,8 @@ This is to allow the drivers first and last name to be stored as a string.
 This will give us an error as we cant change a string into an integer.
 
 Page 89
+Chap4
+
 #1
 CREATE TABLE actors (
     id integer,
@@ -226,6 +233,8 @@ WITH (FORMAT CSV, HEADER);
 It will not due to the fact its only allowed up to 3 numbers before the decimal and 8 afterwards where we have 5 numbers before the decimal and 3 afterwards
 
 Page 106
+Chap5
+
 #1
 Area_Circle = PIE * R^2
 Area_Circle = 3.14 * 5^2
@@ -240,3 +249,122 @@ state_us_abbreviation AS "st",
 (CAST (p0030005 AS numeric(8,1)) / p0010001) * 100 AS "pct_Indian and Natives"
 FROM us_counties_2010
 ORDER BY "pct_Indian and Natives" DESC;
+
+#3
+SELECT percentile_cont(.5)
+WITHIN GROUP (ORDER BY p0010001)
+FROM us_counties_2010
+WHERE state_us_abbreviation = 'CA';
+
+SELECT percentile_cont(.5)
+WITHIN GROUP (ORDER BY p0010001)
+FROM us_counties_2010
+WHERE state_us_abbreviation = 'NY';
+
+California has the higher median between the two.
+
+Page126
+Chap6
+
+#1
+CREATE TABLE us_counties_2000 (
+geo_name varchar(90),
+state_us_abbreviation varchar(2),
+state_fips varchar(2),
+county_fips varchar(3),
+p0010001 integer,
+p0010002 integer,
+p0010003 integer,
+p0010004 integer,
+p0010005 integer,
+p0010006 integer,
+p0010007 integer,
+p0010008 integer,
+p0010009 integer,
+p0010010 integer,
+p0020002 integer,
+p0020003 integer
+);
+
+COPY us_counties_2000
+FROM 'C:\Users\User\Desktop\SQL\practical-sql-master\Chapter_06\us_counties_2000.csv'
+WITH (FORMAT CSV, HEADER);
+
+SELECT c2010.geo_name,
+c2010.state_us_abbreviation,
+c2000.geo_name
+FROM us_counties_2010 c2010 LEFT JOIN us_counties_2000 c2000
+ON c2010.state_fips = c2000.state_fips AND c2010.county_fips = c2000.county_fips
+WHERE c2000.geo_name IS NULL;
+
+#2
+SELECT percentile_cont(.5)
+WITHIN GROUP (ORDER BY round( (CAST(c2010.p0010001 AS numeric(8,1)) - c2000.p0010001)
+/ c2000.p0010001 * 100, 1 )) AS percentile_50th
+FROM us_counties_2010 c2010 INNER JOIN us_counties_2000 c2000
+ON c2010.state_fips = c2000.state_fips
+AND c2010.county_fips = c2000.county_fips;
+   
+#3
+SELECT c2010.geo_name,
+c2010.state_us_abbreviation,
+c2010.p0010001 AS pop_2010,
+c2000.p0010001 AS pop_2000,
+c2010.p0010001 - c2000.p0010001 AS raw_change,
+round( (CAST(c2010.p0010001 AS DECIMAL(8,1)) - c2000.p0010001)
+/ c2000.p0010001 * 100, 1 ) AS pct_change
+FROM us_counties_2010 c2010 INNER JOIN us_counties_2000 c2000
+ON c2010.state_fips = c2000.state_fips
+   AND c2010.county_fips = c2000.county_fips
+ORDER BY pct_change ASC;
+
+Page 147
+Chap7
+CREATE TABLE albums (
+    album_id bigserial,
+    album_catalog_code varchar(100),
+    album_title text,
+    album_artist text,
+    album_time interval,
+    album_release_date date,
+    album_genre varchar(40),
+    album_description text
+);
+
+CREATE TABLE songs (
+    song_id bigserial,
+    song_title text,
+    song_artist text,
+    album_id bigint
+);
+
+#1
+CREATE TABLE albums (
+    album_id bigserial,
+    album_catalog_code varchar(100) NOT NULL,
+    album_title text NOT NULL,
+    album_artist text NOT NULL,
+    album_release_date date,
+    album_genre varchar(40),
+    album_description text,
+    CONSTRAINT album_id_key PRIMARY KEY (album_id),
+    CONSTRAINT release_date_check CHECK (album_release_date > '1/1/1925')
+);
+
+CREATE TABLE songs (
+song_id bigserial,
+song_title text NOT NULL,
+song_artist text NOT NULL,
+album_id bigint REFERENCES albums (album_id),
+CONSTRAINT song_id_key PRIMARY KEY (song_id)
+);
+
+Both of the tables get a primary key in their tables. Then there is also the songs table that has a foreign key constraint,
+and both tables can not be emptied.
+
+#2
+Yes. We would have to know if other companies would like to sell the albums as well.
+
+#3
+To speed up the queries artisits and titles of the album will be good columns candidates for the indexes.
+
