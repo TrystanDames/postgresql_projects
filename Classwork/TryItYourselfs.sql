@@ -652,3 +652,6 @@ FROM meat_poultry_egg_inspect;
 SELECT count(*)
 FROM meat_poultry_egg_inspect
 WHERE meat_processing = TRUE AND poultry_processing = TRUE;
+
+Chap 10
+
