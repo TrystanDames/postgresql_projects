@@ -16,13 +16,16 @@ CREATE TABLE my contacts (
 CREATE TABLE profession (
 	prof_id bigserial,
 	profession varchar(50),
+	CONSTRAINT profession_unique UNIQUE (profession),
 	CONSTRAINT profession_key PRIMARY KEY (prof_id)
 );
 
 CREATE TABLE zip_code (
-	zip_code bigserial,
+	zip_code bigint CHECK (LENGTH (CAST(zip_code AS varchar(4))) = 4),
 	city varchar(25),
 	province varchar(25),
+	CONSTRAINT city_unique UNIQUE (city),
+	CONSTRAINT province_unique UNIQUE (province),
 	CONSTRAINT zip_code_key PRIMARY KEY (zip_code)
 );
 
@@ -53,3 +56,61 @@ CREATE TABLE contact_seeking (
 	contact_id bigserial REFERENCES my_contacts (contact_id),
 	seeking_id bigserial REFERENCES seeking (seeking_id)
 );
+
+INSERT INTO profession (profession)
+VALUES ('Industrial Engineer'),
+('Financial manager'),
+('Aviator'),
+('Chartered Accountant'),
+('Software Engineer'),
+('Sales Consulter');
+
+INSERT INTO zip_code (city, province)
+VALUES ('Port Elizabeth', 'Eastern Cape'),
+('Bhisho', 'Eastern Cape'),
+('Bloemfontein', 'Free State'),
+('Welkom', 'Free State'),
+('Johannesburg', 'Gauteng'),
+('Pretoria', 'Gauteng'),
+('Polokwane', 'Limpopo'),
+('Mokopane', 'Limpopo'),
+('Cape Town', 'Western Cape'),
+('Mossel Bay', 'Western Cape'),
+('Upington', 'Northern Cape'),
+('Kimberley', 'Northern Cape'),
+('Mahikeng', 'North West'),
+('Klerksdorp', 'North West'),
+('Mbombela', 'Mpumalanga'),
+('Hazyview', 'Mpumalanga'),
+('Durban', 'Kwazulu-Natal'),
+('Richards Bay', 'Kwazulu-Natal');
+
+INSERT INTO status (status)
+VALUES ('Single'),
+('Taken'),
+('Widowed'),
+('Married'),
+('Engaged'),
+('Its complicated');
+
+INSERT INTO interests (interest)
+VALUES ('Rowing'),
+('Gaming'),
+('Singing'),
+('Reading'),
+('Camping'),
+('Fishing'),
+('Hiking'),
+('Partying'),
+('Running'),
+('Shopping'),
+('Coding'),
+('Painting'),
+('Cruising'),
+('Cooking'),
+('Gardening');
+
+INSERT INTO seeking (seeking)
+VALUES ('Relationship'),
+('One Night Stand'),
+('Friendship');
