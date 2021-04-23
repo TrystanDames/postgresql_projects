@@ -229,3 +229,21 @@ ON cont.interest_id = intr.interest_id;
 SELECT contact_id, seek.seeking
 FROM contact_seeking AS cont LEFT JOIN seeking AS seek
 ON cont.seeking_id = seek.seeking_id;
+
+SELECT con.last_name, con.first_name, con.phone, con.email, con.gender, con.birthday,
+prof.profession, zip.zip_code, zip.city, zip.province, stat.status,
+intr.interest, seek.seeking
+FROM my_contacts AS con LEFT JOIN profession AS prof
+ON con.prof_id = prof.prof_id
+LEFT JOIN zip_codes AS zip
+ON con.zip_code = zip.zip_code
+LEFT JOIN status AS stat
+ON con.status_id = stat.status_id
+LEFT JOIN contact_interest as cont
+ON con.contact_id = cont.contact_id
+LEFT JOIN interests AS intr
+ON cont.interest_id = intr.interest_id
+LEFT JOIN contact_seeking as conter
+ON con.contact_id = conter.contact_id
+LEFT JOIN seeking AS seek
+ON conter.seeking_id = seek.seeking_id;
