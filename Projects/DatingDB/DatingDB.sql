@@ -7,11 +7,13 @@ CREATE TABLE my_contacts (
 	gender varchar(1),
 	birthday date,
 	prof_id bigserial REFERENCES profession (prof_id),
-	zip_code bigserial REFERENCES zip_code (zip_code),
+	zip_code bigserial REFERENCES zip_codes (zip_code),
 	status_id bigserial REFERENCES status (status_id),
 	CONSTRAINT email_unique UNIQUE (email),
-	CONSTRAINT my_contacts PRIMARY KEY (contact_id) 
+	CONSTRAINT my_contacts_key PRIMARY KEY (contact_id) 
 );
+
+SELECT * FROM my_contacts;
 
 CREATE TABLE profession (
 	prof_id bigserial,
@@ -20,42 +22,56 @@ CREATE TABLE profession (
 	CONSTRAINT profession_key PRIMARY KEY (prof_id)
 );
 
-CREATE TABLE zip_code (
-	zip_code bigint CHECK (LENGTH (CAST(zip_code AS varchar(4))) = 4),
+SELECT * FROM profession;
+
+CREATE TABLE zip_codes (
+	zip_code bigserial CHECK (LENGTH (CAST(zip_code AS varchar(4))) <= 4),
 	city varchar(25),
 	province varchar(25),
 	CONSTRAINT city_unique UNIQUE (city),
-	CONSTRAINT province_unique UNIQUE (province),
 	CONSTRAINT zip_code_key PRIMARY KEY (zip_code)
 );
 
-CREATE TABLE status(
+SELECT * FROM zip_codes;
+
+CREATE TABLE status (
 	status_id bigserial,
-	status varchar(10),
-	CONSTRAINT status PRIMARY KEY (status_id)
+	status varchar(15),
+	CONSTRAINT status_key PRIMARY KEY (status_id)
 );
+
+
+SELECT * FROM status;
 
 CREATE TABLE interests (
 	interest_id bigserial,
 	interest varchar(25),
-	CONSTRAINT interests PRIMARY KEY (interest_id)
+	CONSTRAINT interests_key PRIMARY KEY (interest_id)
 );
+
+SELECT * FROM interests;
 
 CREATE TABLE contact_interest (
 	contact_id bigserial REFERENCES my_contacts (contact_id),
 	interest_id bigserial REFERENCES interests (interest_id)
 );
 
+SELECT * FROM contact_interest;
+
 CREATE TABLE seeking (
 	seeking_id bigserial,
 	seeking varchar(25),
-	CONSTRAINT seeking PRIMARY KEY (seeking_id)
+	CONSTRAINT seeking_key PRIMARY KEY (seeking_id)
 );
+
+SELECT * FROM seeking;
 
 CREATE TABLE contact_seeking (
 	contact_id bigserial REFERENCES my_contacts (contact_id),
 	seeking_id bigserial REFERENCES seeking (seeking_id)
 );
+
+SELECT * FROM contact_seeking;
 
 INSERT INTO profession (profession)
 VALUES ('Industrial Engineer'),
@@ -65,25 +81,25 @@ VALUES ('Industrial Engineer'),
 ('Software Engineer'),
 ('Sales Consulter');
 
-INSERT INTO zip_code (city, province)
-VALUES ('Port Elizabeth', 'Eastern Cape'),
-('Bhisho', 'Eastern Cape'),
-('Bloemfontein', 'Free State'),
-('Welkom', 'Free State'),
-('Johannesburg', 'Gauteng'),
-('Pretoria', 'Gauteng'),
-('Polokwane', 'Limpopo'),
-('Mokopane', 'Limpopo'),
-('Cape Town', 'Western Cape'),
-('Mossel Bay', 'Western Cape'),
-('Upington', 'Northern Cape'),
-('Kimberley', 'Northern Cape'),
-('Mahikeng', 'North West'),
-('Klerksdorp', 'North West'),
-('Mbombela', 'Mpumalanga'),
-('Hazyview', 'Mpumalanga'),
-('Durban', 'Kwazulu-Natal'),
-('Richards Bay', 'Kwazulu-Natal');
+INSERT INTO zip_codes (zip_code, city, province)
+VALUES (6008, 'Port Elizabeth', 'Eastern Cape'),
+(5605, 'Bhisho', 'Eastern Cape'),
+(9320, 'Bloemfontein', 'Free State'),
+(9459, 'Welkom', 'Free State'),
+(2093, 'Johannesburg', 'Gauteng'),
+(0063,'Pretoria', 'Gauteng'),
+(0700, 'Polokwane', 'Limpopo'),
+(0600, 'Mokopane', 'Limpopo'),
+(6665, 'Cape Town', 'Western Cape'),
+(6500, 'Mossel Bay', 'Western Cape'),
+(8800, 'Upington', 'Northern Cape'),
+(8300, 'Kimberley', 'Northern Cape'),
+(2735, 'Mahikeng', 'North West'),
+(2570, 'Klerksdorp', 'North West'),
+(1200, 'Mbombela', 'Mpumalanga'),
+(1242, 'Hazyview', 'Mpumalanga'),
+(4000, 'Durban', 'Kwazulu-Natal'),
+(3875, 'Richards Bay', 'Kwazulu-Natal');
 
 INSERT INTO status (status)
 VALUES ('Single'),
@@ -91,24 +107,24 @@ VALUES ('Single'),
 ('Widowed'),
 ('Married'),
 ('Engaged'),
-('Its complicated');
+('Complicated');
 
 INSERT INTO interests (interest)
-VALUES ('Rowing', 'Gaming'),
-('Gaming', 'Coding'),
-('Singing', 'Fishing'),
-('Reading', 'Gardening'),
-('Camping', 'Partying'),
-('Fishing', 'Camping'),
-('Hiking', 'Shopping'),
-('Partying','Singing'),
-('Running', 'Rowing'),
-('Shopping', 'Painting'),
-('Coding', 'Cruising'),
-('Painting', 'Running'),
-('Cruising', 'Hiking'),
-('Cooking', 'Reading'),
-('Gardening','Cooking');
+VALUES ('Rowing'),
+('Gaming'),
+('Singing'),
+('Reading'),
+('Camping'),
+('Fishing'),
+('Hiking'),
+('Partying'),
+('Running'),
+('Shopping'),
+('Coding'),
+('Painting'),
+('Cruising'),
+('Cooking'),
+('Gardening');
 
 INSERT INTO seeking (seeking)
 VALUES ('Relationship'),
@@ -116,52 +132,100 @@ VALUES ('Relationship'),
 ('Friendship');
 
 INSERT INTO my_contacts (last_name, first_name, phone, email, gender, birthday, prof_id, zip_code, status_id)
-VALUES ('Cole', 'Nicole', '084 485 3729', 'nicolecole@gmail.com', 'F', '2001-05-05', 2, 5, 1),
-('Reed', 'Charlie', '083 571 8872', 'charliereed@gmail.com', 'M', '1999-09-17', 3, 1, 5),
-('Spencer', 'Emma', '086 632 5786', 'emmaspencer@gmail.com', 'F', '2000-01-30', 6, 9, 2),
-('Pollard', 'Ellis', '085 910 0084', 'ellispollard@gmail.com', 'M', '1995-03-13', 4, 3, 1),
-('Frost', 'Libby', '084 299 9670', 'libbyfrost@gmail.com', 'F', '1998-04-16', 1, 7, 6),
-('Blackburn', 'Josh', '083 563 6030', 'joshblackburn@gmail.com', 'M', '1990-12-16', 5, 2, 1),
-('Barnett', 'Scott', '083 971 4819', 'scottbarnett@gmail.com', 'M', '1987-05-05', 6, 4, 4),
-('Curtis', 'Bethany', '083 430 7963', 'bethanycurtis@gmail.com', 'F', '1993-07-18', 1, 6, 4),
-('Fox', 'Lilly', '082 513 8355', 'lillyfox@gmail.com', 'F', '1992-09-10', 4, 8, 3),
-('Nicholson', 'Adam', '082 118 5849', 'adamnicholson@gmail.com', 'M', '2000-04-29', 3, 14, 2),
-('Horton', 'Kiera', '083 883 9728', 'kierahorton@gmail.com', 'F', '1997-01-08', 5, 17, 1),
-('Thomas', 'Louis', '082 826 6837', 'louisthomas@gmail.com', 'M', '1994-02-08', 2, 12, 6),
-('Naylor', 'Jay', '084 608 7530', 'jaynaylor@gmail.com', 'M', '1997-04-04', 1, 11, 1),
-('Knight', 'Ben', '082 555 8574', 'benknight@gmail.com', 'M', '1991-11-22', 4, 13, 6),
-('Bevan', 'Lydia', '083 235 8342', 'lydiabevan@gmail.com', 'F', '2001-07-03', 6, 15, 1);
+VALUES ('Cole', 'Nicole', '0844853729', 'nicolecole@gmail.com', 'F', '2001-05-05', 2, 2093, 1),
+('Reed', 'Charlie', '0835718872', 'charliereed@gmail.com', 'M', '1999-09-17', 3, 6008, 5),
+('Spencer', 'Emma', '0866325786', 'emmaspencer@gmail.com', 'F', '2000-01-30', 6, 6665, 2),
+('Pollard', 'Ellis', '0859100084', 'ellispollard@gmail.com', 'M', '1995-03-13', 4, 9320, 1),
+('Frost', 'Libby', '0842999670', 'libbyfrost@gmail.com', 'F', '1998-04-16', 1, 700, 6),
+('Blackburn', 'Josh', '0835636030', 'joshblackburn@gmail.com', 'M', '1990-12-16', 5, 5605, 1),
+('Barnett', 'Scott', '0839714819', 'scottbarnett@gmail.com', 'M', '1987-05-05', 6, 9459, 4),
+('Curtis', 'Bethany', '0834307963', 'bethanycurtis@gmail.com', 'F', '1993-07-18', 1, 63, 4),
+('Fox', 'Lilly', '0825138355', 'lillyfox@gmail.com', 'F', '1992-09-10', 4, 600, 3),
+('Nicholson', 'Adam', '0821185849', 'adamnicholson@gmail.com', 'M', '2000-04-29', 3, 2570, 2),
+('Horton', 'Kiera', '0838839728', 'kierahorton@gmail.com', 'F', '1997-01-08', 5, 4000, 1),
+('Thomas', 'Louis', '0828266837', 'louisthomas@gmail.com', 'M', '1994-02-08', 2, 8300, 6),
+('Naylor', 'Jay', '0846087530', 'jaynaylor@gmail.com', 'M', '1997-04-04', 1, 8800, 1),
+('Knight', 'Ben', '0825558574', 'benknight@gmail.com', 'M', '1991-11-22', 4, 2735, 6),
+('Bevan', 'Lydia', '0832358342', 'lydiabevan@gmail.com', 'F', '2001-07-03', 6, 1200, 1);
 
-INSERT INTO contact_interrest (contact_id, interest_id)
-VALUES (1, 7),
-(2, 1),
-(3, 10),
-(4, 15),
-(5, 3),
-(6, 13),
-(7, 5),
-(8, 8),
-(9, 12),
-(10, 2),
-(11, 6),
-(12, 14),
-(13, 4),
-(14, 9),
-(15, 11);
+INSERT INTO contact_interest (contact_id, interest_id)
+VALUES (16, 7),
+(16, 4),
+(16, 5),
+(17, 1),
+(17, 8),
+(17, 11),
+(18, 10),
+(18, 2),
+(18, 6),
+(19, 15),
+(19, 3),
+(19, 9),
+(20, 3),
+(20, 12),
+(20, 14),
+(21, 1),
+(21, 9),
+(21, 13),
+(22, 2),
+(22, 10),
+(22, 5),
+(23, 8),
+(23, 13),
+(23, 11),
+(24, 5),
+(24, 15),
+(24, 1),
+(25, 2),
+(25, 8),
+(25, 14),
+(26, 3),
+(26, 15),
+(26, 6),
+(27, 7),
+(27, 12),
+(27, 14),
+(28, 8),
+(28, 2),
+(28, 4),
+(29, 9),
+(29, 6),
+(29, 3),
+(30, 5),
+(30, 1),
+(30, 11);
 
 INSERT INTO contact_seeking (contact_id, seeking_id)
-VALUES (1, 1),
-(2, 2),
-(3, 3),
-(4, 3),
-(5, 2),
-(6, 1),
-(7, 3),
-(8, 2),
-(9, 2),
-(10, 3),
-(11, 1),
-(12, 2),
-(13, 1),
-(14, 3),
-(15, 1);
+VALUES (16, 1),
+(17, 2),
+(18, 3),
+(19, 3),
+(20, 2),
+(21, 1),
+(22, 3),
+(23, 2),
+(24, 2),
+(25, 3),
+(26, 1),
+(27, 2),
+(28, 1),
+(29, 3),
+(30, 1);
+
+SELECT con.last_name, con.first_name, con.phone, con.email, con.gender, con.birthday,
+prof.profession, zip.zip_code, zip.city, zip.province, stat.status
+FROM my_contacts AS con LEFT JOIN profession AS prof
+ON con.prof_id = prof.prof_id
+LEFT JOIN zip_codes AS zip
+ON con.zip_code = zip.zip_code
+LEFT JOIN status AS stat
+ON con.status_id = stat.status_id;
+
+SELECT contact_id, intr.interest
+FROM contact_interest AS cont
+LEFT JOIN interests AS intr
+ON cont.interest_id = intr.interest_id;
+
+SELECT contact_id, seek.seeking
+FROM contact_seeking AS cont LEFT JOIN seeking AS seek
+ON cont.seeking_id = seek.seeking_id;
