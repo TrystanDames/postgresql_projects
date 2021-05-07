@@ -2,21 +2,29 @@ import datetime
 import sqlite3
 
 CREATE_MOVIES_TABLE = """CREATE TABLE IF NOT EXISTS movies (
+	id INTEGER PRIMARY KEY,
 	title TEXT,
 	release_timestamp REAL
 );"""
 
-CREATE_WATCHLIST_TABLE = """CREATE TABLE IF NOT EXISTS watched (
-	watcher_name TEXT,
-	title TEXT
+CREATE_USERS_TABLE = """CREATE TABLE IF NOT EXISTS users(
+	username TEXT PRIMARY KEY
+);"""
+
+CREATE_WATCHED_TABLE = """CREATE TABLE IF NOT EXISTS watched (
+	user_username TEXT,
+	movie_id INTEGER,
+	FOREIGN KEY(user_username) REFRENCES users(username),
+	FOREIGN KEY(movie_id) REFRENCES movies(id)
 );"""
 
 INSERT_MOVIES = "INSERT INTO movies (title, release_timestamp, watched) VALUES (?, ?);"
+INSERT_USER = "INSERT INTO users (username) VALUES (?)"
 DELETE_MOVIE = "DELETE FROM movies WHERE title = ?;" 
 SELECT_ALL_MOVIES = "SELECT * FROM movies;"
 SELECT_UPCOMING_MOVIES = "SELECT * FROM movies WHERE release_timestamp > ?;"
 SELECT_WATCHED_MOVIES = "SELECT * FROM watched WHERE watcher_name = ?;"
-INSERT_WATCHED_MOVIE = "INSERT INTO watched (watcher_name, title) VALUES (?, ?)"
+INSERT_WATCHED_MOVIE = "INSERT INTO watched (user_username, movie_id) VALUES (?, ?)"
 SET_MOVIE_WATCHED = "UPDATE movies SET watched = 1 WHERE title = ?;"
 
 connection = sqlite3.connect("data.db")
@@ -24,7 +32,12 @@ connection = sqlite3.connect("data.db")
 def create_tables():
 	with connection:
 		connection.execute(CREATE_MOVIES_TABLE)
-		connection.execute(CREATE_WATCHLIST_TABLE)
+		connection.execute(CREATE_USERS_TABLE)
+		connection.execute(CREATE_WATCHLED_TABLE)
+
+def add_user(username):
+	with connection:
+		connection.execute(INSERT_USER, (username,))
 
 def add_movie(title, release_timestamp):
 	with connection:
@@ -40,10 +53,9 @@ def get_movies(upcoming = False):
 			cursor.execute(SELECT_ALL_MOVIES)
 		return cursor.fetchall()
 
-def watch_movie(username, title):
+def watch_movie(username, movie_id):
 	with connection:
-		connection.execute(DELETE_MOVIE, (title,))
-		connection.execute(INSERT_WATCHED_MOVIE, (username, title))
+		connection.execute(INSERT_WATCHED_MOVIE, (username, movie_id))
 
 def get_watched_movies(username):
 	with connection:
