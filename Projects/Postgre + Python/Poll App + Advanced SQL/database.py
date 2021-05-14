@@ -35,8 +35,9 @@ WHERE options.poll_id = %s
 GROUP BY options.id;"""
 
 INSERT_POLL_RETURN_ID = "INSERT INTO polls(title, owner_username) VALUES (%s, %s) RETURNING id;"
-INSERT_OPTION = "INSERT INTO options (options_text, poll_id) VALUES %s;"
+INSERT_OPTION = "INSERT INTO options (option_text, poll_id) VALUES %s;"
 INSERT_VOTE = "INSERT INTO votes (username, option_id) VALUES (%s, %s);"
+
 
 def create_tables(connection):
     with connection:
@@ -45,11 +46,13 @@ def create_tables(connection):
             cursor.execute(CREATE_OPTIONS)
             cursor.execute(CREATE_VOTES)
 
+
 def get_polls(connection) -> List[Poll]:
     with connection:
         with connection.cursor() as cursor:
             cursor.execute(SELECT_ALL_POLLS)
             return cursor.fetchall()
+
 
 def get_latest_poll(connection) -> List[PollWithOption]:
     with connection:
@@ -57,11 +60,13 @@ def get_latest_poll(connection) -> List[PollWithOption]:
             cursor.execute(SELECT_LATEST_POLL)
             return cursor.fetchall()
 
+
 def get_polls_details(connection, poll_id: int) -> List[PollWithOption]:
     with connection:
         with connection.cursor() as cursor:
             cursor.execute(SELECT_POLL_WITH_OPTIONS, (poll_id,))
             return cursor.fetchall()
+
 
 def get_polls_and_vote_results(connection, poll_id: int) -> List[PollResults]:
     with connection:
@@ -69,11 +74,13 @@ def get_polls_and_vote_results(connection, poll_id: int) -> List[PollResults]:
             cursor.execute(SELECT_POLL_VOTE_DETAILS, (poll_id,))
             return cursor.fetchall()
 
+
 def get_random_poll_vote(connection, option_id: int) -> Vote:
     with connection:
         with connection.cursor() as cursor:
             cursor.execute(SELECT_RANDOM_VOTE, (option_id,))
             return cursor.fetchone()
+
 
 def create_poll(connection, title: str, owner: str, options: List[str]):
     with connection:
@@ -84,6 +91,7 @@ def create_poll(connection, title: str, owner: str, options: List[str]):
             option_values = [(option_text, poll_id) for option_text in options]
 
             execute_values(cursor, INSERT_OPTION, option_values)
+
 
 def add_poll_vote(connection, username: str, option_id: int):
     with connection:
