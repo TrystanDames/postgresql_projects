@@ -1,7 +1,9 @@
 from typing import List
-from connections import create_connection
-from models.option import Option
+import psycopg2
+from connection import create_connection
+from Models.option import Option
 import database
+
 
 class Poll:
     def __init__(self, title: str, owner: str, _id: int = None):
@@ -29,7 +31,7 @@ class Poll:
         return [Option(option[1], option[2], option[0]) for option in options]
 
     @classmethod
-    def get(cls, poll_id:int) -> "Poll":
+    def get(cls, poll_id: int) -> "Poll":
         connection = create_connection()
         poll = database.get_poll(connection, poll_id)
         connection.close()
