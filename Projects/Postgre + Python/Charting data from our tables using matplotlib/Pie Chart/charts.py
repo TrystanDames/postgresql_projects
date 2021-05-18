@@ -6,7 +6,7 @@ def create_pie_chart(options):
     axes = figure.add_subplot(1, 1, 1)
 
     axes.pie(
-        [options[1] for option in options],
+        [option[1] for option in options],
         labels=[option[0] for option in options],
         autopct="%1.1f%%"
     )
